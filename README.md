@@ -86,7 +86,7 @@ We provide a `main.ipynb` include script above all.
 
 we ignore 3d plot code and show result directly. You can find a test reconstruction video in folder `result`.
 <p align="left">
-<img src='imgs/reconstruction.png' width=450 height=450 /> 
+<img src='imgs/reconstruction.png' width=480 height=360 /> 
 </p>
 
 
