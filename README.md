@@ -9,7 +9,7 @@ This is the official TensorFlow implementation for training and testing tpsNet m
 #### Overview
 
 <p align="left">
-<img src='imgs/altrenative%20TPS.png' width=500 height=350 /> 
+<img src='imgs/altrenative%20TPS.png' width=400 height=280 /> 
 </p>
 
 ## ✏️ 📄 Citation
