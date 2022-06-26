@@ -38,7 +38,7 @@ You can download the [EndoSLAM dataset](https://data.mendeley.com/datasets/cd2rt
 
 **preprocess**
 
-we rectified stereo images sampled from the in-vivo endoscopy stereo video.
+We rectified stereo images sampled from the in-vivo endoscopy stereo video.
 
 **split**
 
@@ -79,7 +79,7 @@ CUDA_VISIBLE_DEVICES=0 python fullZ_train_test.py --mode test --cpts_row 4 --cpt
 ```
 set `--continue_predict True` to predict using last feature in need
 
-We provide a `main.ipynb` include script above all.
+We provide a `main.ipynb` include scripts above all.
 
 
 ## 3D Reconstruction
