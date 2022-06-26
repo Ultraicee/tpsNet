@@ -8,8 +8,8 @@ This is the official TensorFlow implementation for training and testing tpsNet m
 
 #### Overview
 
-<p align="left">
-<img src='imgs/altrenative%20TPS.png' width=420 height=200 /> 
+<p align="center">
+<img src='imgs/altrenative%20TPS.png' width=500 height=350 /> 
 </p>
 
 ## ✏️ 📄 Citation
@@ -85,7 +85,7 @@ We provide a `main.ipynb` include script above all.
 ## 3D Reconstruction
 
 we ignore 3d plot code and show result directly. You can find a test reconstruction video in folder `result`.
-<p align="left">
+<p align="center">
 <img src='imgs/reconstruction.png' width=480 height=360 /> 
 </p>
 
