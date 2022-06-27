@@ -49,15 +49,15 @@ def train_feature(params, feature_in, left_ims, right_ims, tps_base, tps_matrix,
                   loss_norm_mode=True):
     """
     a brief description to this function
-    @param params:
-    @param feature_in:
-    @param left_ims:
-    @param right_ims:
-    @param tps_base:
-    @param tps_matrix:
-    @param linear_interpolator:
+    @param params: arguments
+    @param feature_in: feature control points
+    @param left_ims: 
+    @param right_ims: 
+    @param tps_base: original A matrix
+    @param tps_matrix: updated A matrix 
+    @param linear_interpolator: 
     @param loss_norm_mode:
-    @return:
+    @return: 
     """
     print_str = 'Step{:4} | recons loss={:4} | norm loss={:4} | total loss={:4}' \
                 '  | feature_var_mean={:4}'
