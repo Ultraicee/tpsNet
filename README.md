@@ -60,7 +60,7 @@ Training step:
 set `--continue_training True` to reconstruct multiple disparity using last trained feature in need.
 
 ```shell
-CUDA_VISIBLE_DEVICES=0 python fullZ_total.py --mode 'FEATURE' --cpts_row 4 --cpts_col 4 --A_directory <path_to_load_A_file> \
+CUDA_VISIBLE_DEVICES=0 python fullZ_tps.py --mode 'FEATURE' --cpts_row 4 --cpts_col 4 --A_directory <path_to_load_A_file> \
 --output_directory <path_to_save_result> --continue_training True
 ```
 
