@@ -32,7 +32,7 @@ parser.add_argument('--output_directory', type=str,
                     help='output directory for test disparities, if empty outputs to checkpoint folder',
                     default='output/')
 parser.add_argument('--source_directory', type=str, help='directory to load source images',
-                    default='/home/ubuntu/jupyter_workspace/dataset/real_heart/invivo1_rect/')
+                    default='dataset/invivo1_rect/')
 parser.add_argument('--A_directory', type=str, help='directory to load A matrix',
                     default='output/A_val.txt')
 parser.add_argument('--input_height', type=int, help='input height', default=288)

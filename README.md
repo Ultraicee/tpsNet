@@ -34,7 +34,7 @@ We run our experiments with TensorFlow 1.14.0, CUDA 9.2, Python 3.6.12 and Ubunt
 
 ## 💾 Datasets
 
-You can download the [EndoSLAM dataset](https://data.mendeley.com/datasets/cd2rtzm23r/1) and the [Hamlyn dataset](http://hamlyn.doc.ic.ac.uk/vision/).
+We provide first 300 frame stereo images. You can download the [EndoSLAM dataset](https://data.mendeley.com/datasets/cd2rtzm23r/1) and the [Hamlyn dataset](http://hamlyn.doc.ic.ac.uk/vision/) for more dataset test.
 
 **preprocess**
 
