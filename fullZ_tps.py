@@ -30,7 +30,7 @@ parser.add_argument('--max_step', type=int, help='', default=1000)
 parser.add_argument('--output_directory', type=str,
                     help='output directory for test disparities, if empty outputs to checkpoint folder',
                     default='output/')
-parser.add_argument('--source_directory', type=str, help='directory to load source images',
+parser.add_argument('--source_directory', type=str, help='directory to load dataset',
                     default='dataset/invivo1_rect/')
 parser.add_argument('--A_directory', type=str, help='directory to load A matrix',
                     default='output/A_val.txt')
