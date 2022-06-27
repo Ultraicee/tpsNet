@@ -47,17 +47,7 @@ parser.add_argument('--cpts_col', type=int, help='col of control points', defaul
 
 
 def train_feature(params, feature_in, left_ims, right_ims, tps_matrix, linear_interpolator):
-    """
 
-    @param params:
-    @param feature_in:
-    @param left_ims:
-    @param right_ims:
-    @param tps_matrix:
-    @param linear_interpolator:
-    @return:
-    """
-    #
     print_str = 'Step{:4} | recons loss={:4} | norm loss={:4} | total loss={:4}' \
                 '  | feature_var_mean={:4}'
 
@@ -321,7 +311,16 @@ def train_feature(params, feature_in, left_ims, right_ims, tps_matrix, linear_in
     return feature, tps_mat, disp_val, est_right_val, distance, loss_rec_val
 
 
-def train_z(params, feature_in, tps_matrix, left_ims, right_ims, result_path):
+def train_z(params, feature_in, tps_matrix, left_ims, right_ims):
+    """
+    train feature control points and A matrix of tps
+    @param params: arguments
+    @param feature_in: input feature control points
+    @param left_ims: 
+    @param right_ims: 
+    @param tps_matrix: input A matrix 
+    @return: updated feature ,disp and loss of reconstruction by disp
+    """
     with tf.Graph().as_default(), tf.device('/gpu: 0'):
         linear_interpolator = LinearInterpolator(params)  # initialize linear interpolator
         loss_seq = np.empty(shape=[0, 3], dtype=np.float32)
@@ -345,7 +344,7 @@ def train(params):
     for epoch_num in range(params.epoch_num):
         T1 = time.time()
         print("----------Epoch {}---------".format(epoch_num))
-        train_z(params, feature_in, tps_base0, left_ims, right_ims, params.output_directory)
+        train_z(params, feature_in, tps_base0, left_ims, right_ims)
         T2 = time.time()
         print('Epoch %d cost time:%s s' % (epoch_num, (T2 - T1)))
 
@@ -362,7 +361,7 @@ def test(params):
         right_ims = np.array(right_ims, dtype=np.float32)
         tps_base0 = np.load(os.path.join(params.output_directory, 'tps_trained_.npy'))  # use trained tps matrix
         feature_in = 83.2 * np.ones([params.test_num, params.cpts_row * params.cpts_col, 1], dtype=np.float32)
-        new_feature, disp, res_loss = train_z(params, feature_in, tps_base0, left_ims, right_ims, params.output_directory)
+        new_feature, disp, res_loss = train_z(params, feature_in, tps_base0, left_ims, right_ims)
         np.save(params.output_directory + 'TPSdisp_per_img.npy', disp)
         np.save(params.output_directory + 'TPSloss_per_img.npy', res_loss)
         print("save TPSdisp_per_img.npy and TPSloss_per_img.npy")
@@ -376,7 +375,7 @@ def test(params):
             left_im = np.array(left_im, dtype=np.float32)
             right_im = np.array(right_im, dtype=np.float32)
             feature_in = 83.2 * np.ones([1, params.cpts_row * params.cpts_col, 1], dtype=np.float32)
-            new_feature, disp, res_loss = train_z(params, feature_in, tps_base0, left_ims, right_ims,params.output_directory)
+            new_feature, disp, res_loss = train_z(params, feature_in, tps_base0, left_ims, right_ims)
             feature_in = new_feature  # update feature input for next image
             disps.append(disp)
             loss.append(res_loss)
