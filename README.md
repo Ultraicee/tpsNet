@@ -9,7 +9,7 @@ This is the official TensorFlow implementation for training and testing tpsNet m
 #### Overview
 
 <p align="center">
-<img src='imgs/altrenative%20TPS.png' width=400 height=280 /> 
+<img src='imgs/tpsNet.png' width=600 height=300 /> 
 </p>
 
 ## ✏️ 📄 Citation
@@ -86,9 +86,24 @@ We provide a `main.ipynb` include scripts above all.
 
 we ignore 3d plot code and show result directly. You can find a test reconstruction video in folder `result`.
 <p align="center">
-<img src='imgs/reconstruction.png' width=500 height=500 /> 
+<img src='imgs/reconstruction.png' width=720 height=525 /> 
 </p>
 
+## Campare
+
+we compare our method with several well-know end to end models of stereo depth estimation.
+
+- disparity map result
+
+<p align="center">
+<img src='imgs/disp_compare.png' width=720 height=525 /> 
+</p>
+
+- reconstruction result
+
+<p align="center">
+<img src='imgs/recons_compare.png' width=720 height=525 /> 
+</p>
 
 ## Contact
 
