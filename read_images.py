@@ -5,10 +5,10 @@ import cv2
 
 def read_stereo_images(source_img_path, id_list):
     """
-
-    :param source_img_path:
+    read source image of ids
+    :param source_img_path: image path
     :param id_list: a list constructed with the index of source picture in the file
-    :return:
+    :return: two shape of [b, w, h, c] numpy matrix
     """
     left_path = os.path.join(source_img_path, r'Left')
     right_path = os.path.join(source_img_path, r'Right')
