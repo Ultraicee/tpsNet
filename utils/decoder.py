@@ -21,9 +21,11 @@ def decoder_forward(theta_in, T_weight, sz_params):
     # right edges of the image. The range of cut is determined by image situation.
 
     disp_vec = tf.map_fn(lambda x: tf.matmul(T_weight, x), theta_in)  # D = T*theta
-    d_height,d_width= get_tps_size(sz_params) # size of cropped image, expect to be 200x200
+    d_height, d_width = get_tps_size(sz_params)  # size of cropped image, expect to be 200x200
     disp_tensor = tf.reshape(disp_vec, [tf.shape(theta_in)[0], d_height, d_width, 1])  # shape = [b h w 1]
-    paddings = tf.constant([[0,0],[sz_params.crop_top,sz_params.crop_bottom],[sz_params.crop_left,sz_params.crop_right],[0,0]]) # padding by zeros
+    paddings = tf.constant(
+        [[0, 0], [sz_params.crop_top, sz_params.crop_bottom], [sz_params.crop_left, sz_params.crop_right],
+         [0, 0]])  # padding by zeros
     disp_ex = tf.pad(disp_tensor, paddings, "CONSTANT")
 
     return disp_ex
@@ -34,10 +36,12 @@ def decoder_forward2(feature_in, feature_in_base, tps_weight, disp_base, sz_para
     disp_vec = tf.map_fn(lambda x: tf.matmul(tps_weight, x), z_delta)
     d_height, d_width = get_tps_size(sz_params)
     disp_tensor = tf.reshape(disp_vec, [tf.shape(feature_in)[0], d_height, d_width, 1])
-    paddings = tf.constant([[0,0],[sz_params.crop_top,sz_params.crop_bottom],[sz_params.crop_left,sz_params.crop_right],[0,0]]) # padding by zeros
+    paddings = tf.constant(
+        [[0, 0], [sz_params.crop_top, sz_params.crop_bottom], [sz_params.crop_left, sz_params.crop_right],
+         [0, 0]])  # padding by zeros
     disp_ex = tf.pad(disp_tensor, paddings, "CONSTANT")
-    disp_ex = tf.add(disp_ex,disp_base)
-    
+    disp_ex = tf.add(disp_ex, disp_base)
+
     return disp_ex
 
 

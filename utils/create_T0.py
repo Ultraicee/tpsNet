@@ -5,14 +5,14 @@
 # parts of the code from https://github.com/SiyuanXuu/tpsNet
 
 from __future__ import absolute_import, division, print_function
-import argparse
+
 # only keep warnings and errors
 import os
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "1" 
 
-import tensorflow as tf
-import numpy as np
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "1"
+
 from .decoder import *
+
 
 def matrix_Q(cp_cor_val, ob_cor_val):
     cp_row, cp_col = tf.split(cp_cor_val, 2, axis=1)
@@ -30,18 +30,17 @@ def matrix_Q(cp_cor_val, ob_cor_val):
 
 def get_T_init(params):
     interp_height, interp_width = get_tps_size(params)
-    tps = TPS_param([interp_height,interp_width],[0, 0], [params.cpts_row, params.cpts_col])
+    tps = TPS_param([interp_height, interp_width], [0, 0], [params.cpts_row, params.cpts_col])
     T0 = tps.matrix_T()
     with tf.device('/gpu: 0'):
         with tf.Session() as sess:
-            print("start calculate T_init...")
             T_init = sess.run(T0)
             print("T_init.shape={}".format(T_init.shape))
             if params.output_directory:
                 if not os.path.exists(params.output_directory):
                     os.makedirs(params.output_directory)
-                np.savetxt(params.output_directory+'T_init.txt', T_init)
-                print('saved T_init at file :',params.output_directory+'T_init.txt')
+                np.savetxt(params.output_directory + 'T_init.txt', T_init)
+                print('Saved T_init at file :', params.output_directory + 'T_init.txt')
                 return T_init
             else:
                 print("Warning: You haven't save it, set [--output_directory] to save T_init.txt")

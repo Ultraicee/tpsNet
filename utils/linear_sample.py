@@ -1,5 +1,6 @@
-from .decoder import *
 import tensorflow as tf
+
+from .decoder import *
 
 
 class LinearInterpolator:
@@ -117,29 +118,58 @@ def compute_rec_loss(est_im, real_im, compensateI, sz_params, thres):
     loss_rec_sum = tf.reduce_sum(tf.multiply(tf.square(est_crop - real_crop - compensateI), compa_rgb), axis=[1, 2, 3])
 
     compa_sum = tf.reduce_sum(compa_rgb, axis=[1, 2, 3])
+
     loss_rec = tf.reduce_mean(tf.divide(loss_rec_sum, compa_sum))
 
     compa_sum_batch = tf.reduce_sum(compa_sum)
     loss_rec_sum_ = tf.reduce_mean(loss_rec_sum)
-        
+
     return loss_rec, compa_sum_batch, loss_rec_sum_
 
 
-def compute_smooth_rec_loss(est_im, real_im, compensateI, sz_params,  T_init, T_cur, arg = 'single_img', thres=160.0, beta=1.0):
-    """
-    calculate smooth loss and recons loss per image
-    @param arg: loss of a batch or single image
-    @param est_im:recons image by output disp
-    @param real_im: real image
-    @param compensateI: light compensation
-    @param sz_params: setting params
-    @param thres: threshold value of light
-    @param T_TRUE:
-    @param T_cur: current T
-    @param beta: ratio of smooth loss
-    @return: recons loss per image, no mask number,sum of recons loss and smooth loss
-    """
+def compute_rec_smooth_loss1(est_im, real_im, compensateI, sz_params, T, cu_T, thres=160.0, beta=1.0):
+    d_height, d_width = get_tps_size(sz_params)
+    est_crop = tf.slice(est_im, [0, sz_params.crop_top, sz_params.crop_left, 0], [-1, d_height, d_width, -1],
+                        name='est_r_crop')
+    real_crop = tf.slice(real_im, [0, sz_params.crop_top, sz_params.crop_left, 0], [-1, d_height, d_width, -1],
+                         name='r_crop')
+    real_crop_gray = tf.image.rgb_to_grayscale(real_crop)
+    est_im_gray = tf.image.rgb_to_grayscale(est_crop)
 
+    shape = tf.shape(real_crop_gray)
+    reflect_area = tf.fill(shape, thres)
+
+    compa2 = tf.less(real_crop_gray, reflect_area)
+    compa3 = tf.less(est_im_gray, reflect_area)
+    compa = tf.to_float(compa2 & compa3)
+
+    kernel = np.array([
+        [-1, -1, 0, 0, 0, -1, -1],
+        [-1, 0, 0, 0, 0, 0, -1],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [-1, 0, 0, 0, 0, 0, -1],
+        [-1, -1, 0, 0, 0, -1, -1]]).astype(np.float32).reshape(7, 7, 1)
+    compa_erosion = tf.nn.erosion2d(compa, kernel, strides=[1, 1, 1, 1], rates=[1, 1, 1, 1], padding="SAME")
+    compa_rgb = tf.tile(compa_erosion, [1, 1, 1, 3])
+    loss_rec_sum = tf.reduce_sum(tf.multiply(tf.square(est_crop - real_crop - compensateI), compa_rgb), axis=[1, 2, 3])
+    compa_sum = tf.reduce_sum(compa_rgb, axis=[1, 2, 3])
+    # reconstruction loss of per pixel per channel
+    loss_rec = tf.reduce_mean(tf.divide(loss_rec_sum, compa_sum))
+    # loss for train T
+    T_loss = cu_T - T
+    T_loss = tf.reshape(T_loss, [1, d_height, d_width, -1])
+    T_loss_ = tf.transpose(T_loss, [3, 1, 2, 0])
+    filter_ = np.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]]).reshape(3, 3, 1, 1)
+    filter_1 = tf.constant(filter_, dtype='float32')
+    Laplace_img = tf.nn.conv2d(input=T_loss_, filter=filter_1, strides=[1, 1, 1, 1], padding='SAME')
+    loss_T_smooth = beta * tf.reduce_sum(tf.square(Laplace_img))
+
+    return loss_rec, loss_T_smooth, compa_sum
+
+
+def compute_rec_smooth_loss2(est_im, real_im, compensateI, sz_params, T, cu_T, thres=160.0, beta=1.0):
     d_height, d_width = get_tps_size(sz_params)
     est_crop = tf.slice(est_im, [0, sz_params.crop_top, sz_params.crop_left, 0], [-1, d_height, d_width, -1],
                         name='est_r_crop')
@@ -148,40 +178,37 @@ def compute_smooth_rec_loss(est_im, real_im, compensateI, sz_params,  T_init, T_
 
     real_crop_gray = tf.image.rgb_to_grayscale(real_crop)
     est_im_gray = tf.image.rgb_to_grayscale(est_crop)
-
     shape = tf.shape(real_crop_gray)
-    reflect = tf.fill(shape,thres)
-
-    compa2=tf.less(real_crop_gray,reflect)
-    compa3=tf.less(est_im_gray,reflect)
-
-    compa = tf.to_float(compa2&compa3)
+    reflect_area = tf.fill(shape, thres)
+    compa2 = tf.less(real_crop_gray, reflect_area)
+    compa3 = tf.less(est_im_gray, reflect_area)
+    compa = tf.to_float(compa2 & compa3)
     kernel = np.array([
-                [-1,-1,0,0,0,-1,-1],
-                [-1,0,0,0,0,0,-1],
-                [0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0],
-                [-1,0,0,0,0,0,-1],
-                [-1,-1,0,0,0,-1,-1]]).astype(np.float32).reshape(7,7,1)
-    compa_erosion = tf.nn.erosion2d(compa, kernel, strides = [1, 1, 1, 1], rates = [1, 1, 1, 1], padding="SAME")
-    compa_rgb = tf.tile(compa_erosion,[1,1,1,3])
-    loss_rec_sum = tf.reduce_sum(tf.multiply(tf.square(est_crop - real_crop - compensateI),compa_rgb), axis = [1,2,3])
-    compa_sum = tf.reduce_sum(compa_rgb,axis = [1,2,3])
-    loss_rec = tf.reduce_mean(tf.divide(loss_rec_sum,compa_sum))
+        [-1, -1, 0, 0, 0, -1, -1],
+        [-1, 0, 0, 0, 0, 0, -1],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [-1, 0, 0, 0, 0, 0, -1],
+        [-1, -1, 0, 0, 0, -1, -1]]).astype(np.float32).reshape(7, 7, 1)
+    compa_erosion = tf.nn.erosion2d(compa, kernel, strides=[1, 1, 1, 1], rates=[1, 1, 1, 1],
+                                    padding="SAME")  
+    compa_rgb = tf.tile(compa_erosion, [1, 1, 1, 3])
 
-    # for train T
-    A_loss = T_cur - T_init
-    A_loss = tf.reshape(A_loss, [1,d_height,d_width,-1])
-    A_loss_ = tf.transpose(A_loss,[3,1,2,0])
-    filter_ = np.array([[1,1,1],[1,-8,1],[1,1,1]]).reshape(3,3,1,1)
-    filter_1 = tf.constant(filter_,dtype = 'float32')
-    Laplace_img = tf.nn.conv2d(input = A_loss_,filter = filter_1,strides=[1,1,1,1],padding='SAME')
-    loss_A_smooth = beta*tf.reduce_sum(tf.square(Laplace_img))
-    if arg =='single_img':
-        compa_sum_batch = compa_sum
-        loss_rec_perimg = loss_rec
-    else:
-        loss_rec_perimg = tf.reduce_mean(loss_rec_sum)  # if is batch, calculate loss of per image
-        compa_sum_batch = tf.reduce_sum(compa_sum)
-    return loss_rec, loss_A_smooth, compa_sum_batch, loss_rec_perimg
+    loss_rec_sum = tf.reduce_sum(tf.multiply(tf.square(est_crop - real_crop - compensateI), compa_rgb), axis=[1, 2, 3])
+    compa_sum = tf.reduce_sum(compa_rgb, axis=[1, 2, 3])
+    loss_rec = tf.reduce_mean(tf.divide(loss_rec_sum, compa_sum))
+
+    loss_rec_perimg = tf.reduce_mean(loss_rec_sum)
+    compa_sum_batch = tf.reduce_sum(compa_sum)
+
+    T_loss = cu_T - T
+    T_loss = tf.reshape(T_loss, [1, 200, 200, -1])
+    T_loss_ = tf.transpose(T_loss, [3, 1, 2, 0])
+    filter_ = np.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]]).reshape(3, 3, 1, 1)
+    filter_1 = tf.constant(filter_, dtype='float32')
+    Laplace_img = tf.nn.conv2d(input=T_loss_, filter=filter_1, strides=[1, 1, 1, 1], padding='SAME')
+
+    loss_smooth = beta * tf.reduce_sum(tf.square(Laplace_img))
+
+    return loss_rec, loss_rec_perimg, compa_sum_batch, loss_smooth
