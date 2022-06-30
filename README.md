@@ -48,20 +48,8 @@ We train first 200 frame data of in-vivo endoscopy stereo dataset and test frame
 
 **Standard TPS training:**
 
-Create A matrix:
-
 ```shell
-CUDA_VISIBLE_DEVICES=0 python create_A.py --interp_height 200 --interp_width 200 --interp_top 0 \
---interp_left 0 --feature_row 4 --feature_col 4 --save_path <path_to_save_A_file>
-```
-
-Training step:
-
-set `--continue_training True` to reconstruct multiple disparity using last trained feature in need.
-
-```shell
-CUDA_VISIBLE_DEVICES=0 python fullZ_tps.py --mode 'FEATURE' --cpts_row 4 --cpts_col 4 --A_directory <path_to_load_A_file> \
---output_directory <path_to_save_result> --continue_training True
+CUDA_VISIBLE_DEVICES=0 python std_tps.py --model 'TPS' --cpts_row 4 --cpts_col 4 --output_directory <path_to_save_result>
 ```
 
 **Alternative TPS training:**
@@ -69,15 +57,13 @@ CUDA_VISIBLE_DEVICES=0 python fullZ_tps.py --mode 'FEATURE' --cpts_row 4 --cpts_
 
 Training step:
 ```shell
-CUDA_VISIBLE_DEVICES=0 python fullZ_train_test.py --mode train --cpts_row 4 --cpts_col 4 --A_directory <path_to_load_A_file> \
---output_directory <path_to_save_result>
+CUDA_VISIBLE_DEVICES=0 python o_tps.py --pretrained False --cpts_row 4 --cpts_col 4 --output_directory <path_to_save_result>
 ```
 Test step:
 ```shell
-CUDA_VISIBLE_DEVICES=0 python fullZ_train_test.py --mode test --cpts_row 4 --cpts_col 4 --A_directory <path_to_load_A_file> \
---output_directory <path_to_save_result> --continue_predict True
+CUDA_VISIBLE_DEVICES=0 python std_tps.py --model 'OTPS'
 ```
-set `--continue_predict True` to predict using last feature in need
+set `--model OTPS` to load trained T of OTPS model for test
 
 We provide a `main.ipynb` include scripts above all.
 
