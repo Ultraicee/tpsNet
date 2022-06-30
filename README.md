@@ -2,7 +2,7 @@
 
 You can find our official newest version at https://github.com/SiyuanXuu/tpsNet.
 
-This is a debug implementation for training and testing tpsNet models using the method described in 
+This repo is a debug implementation for training and testing tpsNet models using the method described in 
 >
 > **Reconstructing-Dynamic-Soft-Tissue-with-Stereo-Endoscope-Based-on-a-Single-layer-Network**
 >
