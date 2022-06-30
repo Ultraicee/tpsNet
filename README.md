@@ -1,5 +1,7 @@
 # Reconstructing-Dynamic-Soft-Tissue-with-Stereo-Endoscope-Based-on-a-Single-layer-Network
 
+You can find the official newest version at https://github.com/SiyuanXuu/tpsNet.
+
 This is a TensorFlow implementation for training and testing tpsNet models using the method described in 
 >
 > **Reconstructing-Dynamic-Soft-Tissue-with-Stereo-Endoscope-Based-on-a-Single-layer-Network**
