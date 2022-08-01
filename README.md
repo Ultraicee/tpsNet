@@ -1,13 +1,5 @@
 # Reconstructing-Dynamic-Soft-Tissue-with-Stereo-Endoscope-Based-on-a-Single-layer-Network
 
-You can find our official newest version at https://github.com/SiyuanXuu/tpsNet.
-
-This repo is a debug version of implementation for training and testing tpsNet models using the method described in 
->
-> **Reconstructing-Dynamic-Soft-Tissue-with-Stereo-Endoscope-Based-on-a-Single-layer-Network**
->
-> Bo Yang, Siyuan Xu et al.
-
 #### Overview
 
 <p align="center">
