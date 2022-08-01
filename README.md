@@ -14,21 +14,6 @@ This repo is a debug version of implementation for training and testing tpsNet m
 <img src='imgs/tpsNet.png' width=600 height=300 /> 
 </p>
 
-## ✏️ 📄 Citation
-
-If you find our work useful in your research please consider citing our paper:
-
-```
-@inproceedings{ ,
-  title={Reconstructing-Dynamic-Soft-Tissue-with-Stereo-Endoscope-Based-on-a-Single-layer-Network},
-  author={Bo Yang, Siyuan Xu},
-  journal={},
-  volume={},
-  pages={},
-  year={2022},
-  publisher={}
-}
-```
 
 ## ⚙️ Setup
 
