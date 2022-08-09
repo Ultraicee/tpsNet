@@ -69,7 +69,3 @@ we compare our method with several well-know end to end models of stereo depth e
 <p align="center">
 <img src='imgs/recons_compare.png' width=720 height=525 /> 
 </p>
-
-## Contact
-
-If you have any questions, please feel free to contact boyang@uestc.edu.cn.
