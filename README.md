@@ -61,6 +61,9 @@ we compare our method with several well-know end to end models of stereo depth e
 - disparity map result
 
 <p align="center">
+<img src='imgs/our disp.png' width=720 height=650 /> 
+</p>
+<p align="center">
 <img src='imgs/disp_compare.png' width=720 height=525 /> 
 </p>
 
