@@ -67,5 +67,8 @@ we compare our method with several well-know end to end models of stereo depth e
 - reconstruction result
 
 <p align="center">
-<img src='imgs/recons_compare.png' width=720 height=525 /> 
+<img src='imgs/our results.png' width=720 height=650 /> 
+</p>
+<p align="center">
+<img src='imgs/others results.png' width=720 height=650 /> 
 </p>
